@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>專題首頁</title>
+  <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    {% load static %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-dark bg-dark">
+                     
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="navbar-toggler-icon"></span>
+                    </button> <a class="navbar-brand" href="http://127.0.0.1:8000/">首頁</a>
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                 <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown">居家智能辨識系統</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                     <a class="dropdown-item" href="http://127.0.0.1:8000/face/button">門禁系統</a> 
+                                     <a class="dropdown-item" href="http://127.0.0.1:8000/item/up">物件辨識</a>
+                                </div>
+                            </li>
+                        </ul>
+                        <form class="form-inline">
+                            <input class="form-control mr-sm-2" type="text" /> 
+                            <button class="btn btn-primary my-2 my-sm-0" type="submit">
+                                Search
+                            </button>
+                        </form>
+                        <ul class="navbar-nav ml-md-auto">
+                            <li class="nav-item active" style="color: aliceblue;">
+                              {% if user.is_authenticated %}
+                                Hello, {{ user.username }}!
+                                <a class="nav-link" href="{% url 'logout' %}">登出 <span class="sr-only">(current)</span></a>
+                              {% else %}
+                                <p>尚未登入帳號</p>
+                                <a href="{% url 'login' %}">登入</a>
+                              {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="page-header" style="text-align:center">
+                    <p></p>
+                    <h1>
+                        AIEN10 第2組<small>  居家智能辨識系統</small>
+                    </h1>
+                    <p></p>
+                </div>
+                <div class="col-md-10" style="margin:0 auto">
+                    <div class="row">
+                        <div class="col-md-4" >
+                            <div class="card" style="height: 600px;background-color: #e9e9e9;">
+                                <img class="card-img-top" style="height: 60%" alt="Bootstrap Thumbnail First" src="{% static 'images/f.jpg' %}" />
+                                <div class="card-block" style="margin-left: 20px ;">
+                                    <h5 class="card-title" style="color: black;">
+                                        門禁系統
+                                    </h5>
+                                    <p class="card-text" >
+                                        <p>a. 每位成員提供100張相片，並透過圖像編輯加強特徵抽取</p>
+                                        <p>b. 將存取好的成員資料存入SQLite</p>
+                                        <p>c. 搭配web camera即時比對人臉是否符合</p>                                 
+                                    </p>
+                                    <p>
+                                        <a class="btn btn-primary" href="http://127.0.0.1:8000/face/button">Action</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card" style="height: 600px;background-color:	#e9e9e9;">
+                                <img class="card-img-top" style="height: 60%" alt="Bootstrap Thumbnail Third" src="{% static 'images/i.jpg' %}" />
+                                <div class="card-block"style="margin-left: 20px ;">
+                                    <h5 class="card-title">
+                                        物件辨識
+                                    </h5>
+                                    <p class="card-text">
+                                        <p>a. 收集辨識物件約一千張圖片，並加上個物件標。</p>
+                                        <p>b. 並透過YOLO、Darknet訓練相關資料集檔案。</p>
+                                        <p>c. 辨識成功後發布訊息提醒使用者，遺忘攜帶物品有哪些。</p>   
+                                    </p>
+                                    <p>
+                                        <a class="btn btn-primary" href="http://127.0.0.1:8000/item/up">Action</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

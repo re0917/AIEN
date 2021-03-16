@@ -1,0 +1,168 @@
+<!-- base.html (ch07www project) -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>門禁系統</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+   
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row bg-light text-white" >
+            <div class="col-md-12 ">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-dark bg-dark">
+                     
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="navbar-toggler-icon"></span>
+                    </button> <a class="navbar-brand" href="http://127.0.0.1:8000/">首頁</a>
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                 <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown">居家智能辨識系統</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" href="http://127.0.0.1:8000/face/button">門禁系統</a> 
+                                    <a class="dropdown-item" href="http://127.0.0.1:8000/item/up">物件辨識</a>
+                                </div>
+                            </li>
+                        </ul>
+                        <form class="form-inline">
+                            <input class="form-control mr-sm-2" type="text" /> 
+                            <button class="btn btn-primary my-2 my-sm-0" type="submit">
+                                Search
+                            </button>
+                        </form>
+                        <ul class="navbar-nav ml-md-auto">
+                            <li class="nav-item active" style="color: aliceblue;">
+                              {% if user.is_authenticated %}
+                                Hello, {{ user.username }}!
+                                <a class="nav-link" href="{% url 'logout' %}">登出 <span class="sr-only">(current)</span></a>
+                              {% else %}
+                                <p>尚未登入帳號</p>
+                                <a href="{% url 'login' %}">登入</a>
+                              {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+            </div>
+        </div>
+        <div class="page-header" style="text-align:center">
+            <p></p>
+            <h2>門禁系統</h2>
+        </div>
+    </div> 
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table table-hover"style="position:absolute;top:70px;left:50px;width:550px">
+                    <thead class='table-dark'>
+                        <tr>
+                            <th>
+                                ID
+                            </th>
+                            <th>
+                                Confidence
+                            </th>
+                            <th>
+                                Note
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id = 'table1'>
+                            </td>
+                            <td id = 'table2'>
+                            </td>
+                            <td id = 'table3'> 
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- <div class="col-md-6"style="top:100px">
+                <img alt="Bootstrap Image Preview" src="https://www.layoutit.com/img/sports-q-c-140-140-3.jpg" />
+            </div> -->
+        </div>
+    </div>
+    <div style="position:absolute;left:50px;top:150px"> 
+    <form action="http://127.0.0.1:8000/face/run">
+        <button type="submit" class="btn btn-secondary btn-md active">登入門禁系統</button>
+        <!-- <button id="analysisbutton">開始辨識</button> -->
+        <button type="button" id="analysisbutton" class="btn btn-secondary btn-md active">
+            開始辨識
+        </button>
+    </form>
+    </div>
+        <!-- <div>
+            <table id="table1">
+            </table>
+        </div> -->
+        <script>
+            function getdetail(){
+                $.ajax({
+                    type:"GET",
+                    url:"/face/send_data/",
+                    success:function(result){
+                        var tables
+                        var tables2
+                        var tables3
+                        $.each(result.data,function(key,value){
+                            // tables ="<tr><td>"+key+"</td>"+"<td>"+value+"</td></tr>";
+                            tables =key
+                            tables2 = value
+                            // tables ="<td>"+value+"</td></tr>";
+                            // if ((key = 'Peter')){tables3='President'}
+                            // else if ((key = 'Kate')){tables3='Chief Executive Officer'}
+                            // else if ((key = 'Lucy')){tables3='Executive'}
+                            // else if ((key = 'Chris')){tables3='Chairman'}
+                            // else if ((key = 'Jasper')){tables3='Vice President'}
+
+                            switch(key){
+                                case 'Peter':
+                                    $('#table3').html('President');
+                                    break;
+                                case 'Kate':
+                                    $('#table3').html('Chief Executive Officer');
+                                    break;
+                                case 'Lucy':
+                                    $('#table3').html('Executive');
+                                    break;
+                                case 'Chris':
+                                    $('#table3').html('Chairman');
+                                    break;
+                                case 'Jasper':
+                                    $('#table3').html('Vice President');
+                                    break;
+                                case '':
+                                    $('#table3').html('');
+                            }
+
+                        })
+                        $('#table1').html(tables)
+                        $('#table2').html(tables2)
+                        
+                    },
+                    error:function(){
+                        alert("error")
+                    }
+                })
+            }
+            $(analysisbutton).click(function(){
+                setInterval(function(){getdetail();},1000)
+            })
+        </script>
+</body>
+</html>

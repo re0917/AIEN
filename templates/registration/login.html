@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}
+Login
+{% endblock title %}
+{% block content %}
+<form method="post" action="{% url 'login' %}">
+{% csrf_token %}
+<table>
+  <tr>
+    <td>{{ form.username.label_tag }}</td>
+    <td>{{ form.username }}</td>
+  </tr>
+  <tr>
+    <td>{{ form.password.label_tag }}</td>
+    <td>{{ form.password }}</td>
+  </tr>
+</table>
+<input type="submit" value="登入">
+</form>
+<form action="http://127.0.0.1:8000/register/">
+<input type="submit" value="註冊">
+</form>
+{% endblock content %}

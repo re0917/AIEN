@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>物件辨識</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+   
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+</head>
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row bg-light text-white" >
+            <div class="col-md-12 ">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-dark bg-dark">
+                     
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="navbar-toggler-icon"></span>
+                    </button> <a class="navbar-brand" href="http://127.0.0.1:8000/">首頁</a>
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                 <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown">居家智能辨識系統</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" href="http://127.0.0.1:8000/face/button">門禁系統</a> 
+                                    <a class="dropdown-item" href="http://127.0.0.1:8000/item/up">物件辨識</a>
+                                </div>
+                            </li>
+                        </ul>
+                        <form class="form-inline">
+                            <input class="form-control mr-sm-2" type="text" /> 
+                            <button class="btn btn-primary my-2 my-sm-0" type="submit">
+                                Search
+                            </button>
+                        </form>
+                        <ul class="navbar-nav ml-md-auto">
+                            <li class="nav-item active" style="color: aliceblue;">
+                              {% if user.is_authenticated %}
+                                Hello, {{ user.username }}!
+                                <a class="nav-link" href="{% url 'logout' %}">登出 <span class="sr-only">(current)</span></a>
+                              {% else %}
+                                <p>尚未登入帳號</p>
+                                <a href="{% url 'login' %}">登入</a>
+                              {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+            </div>
+        </div>
+        <div class="page-header" style="text-align:center">
+            <p></p>
+            <h2>物件辨識</h2>
+        </div>
+    </div> 
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table table-hover"style="position:absolute;top:70px;left:50px;width:550px">
+                    <thead class='table-dark'>
+                        <tr>
+                            <th>
+                                #
+                            </th>
+                            <th>
+                                Items
+                            </th>
+                            <th>
+                                Confidence
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="table1">
+                    </tbody>
+                </table>
+                <h3 id="foritem" style="position:absolute;top:300px;left:50px;width:550px"></h3>
+            </div>
+            <div class="col-md-6">
+                <img style="display:none;" id="bigpic" src='bigpic'/>
+            </div>
+        </div>
+    </div>
+    <div id="uploader" style="position:absolute;left:50px;top:150px"> 
+        <form id="upload" enctype="multipart/form-data" action="http://127.0.0.1:8000/item/upload/" method="post" style="display: inline;">  {% csrf_token %}
+            <input id="file" name="file" type="file" class="btn btn-secondary btn-md active"> 
+            <button type="submit" class="btn btn-secondary btn-md active" >Upload</button >
+        </form >  
+        <!-- <form action="http://127.0.0.1:8000/item/button "> -->
+        <button id="analysisbutton" class="btn btn-secondary btn-md active">物件偵測</button>
+        <!-- </form> -->
+        {% load static %}   
+        <!-- <img style="display:none;" id="bigpic" src='bigpic'/> -->
+    </div> 
+    <script>
+        function getdetail(){
+                $.ajax({
+                    type:"GET",
+                    url:"/item/send_data/",
+                    success:function(result){
+                        // var tables+="<tr><th>編號</th><th>動作</th></tr>";
+                        // var table1
+                        var myDate = new Date()
+                        var year = myDate.getFullYear()
+                        var mon = myDate.getMonth()+1
+                        var date = myDate.getDate()
+                        var hou = myDate.getHours()
+                        var min = myDate.getMinutes()
+                        var dt = '當前時間:'+year+'-'+mon+'-'+date+'-'+hou+':'+min
+                        var table1
+                        var foritem=''
+                        var foritem2
+                        var fornull='物品帶齊'
+                        var i =0
+                        $.each(result.data,function(key,value){
+                            i += 1
+                            table1 +='<tr><td>'+i+'</td><td>'+key+'</td><td>'+value+'</td></tr>'
+                            foritem +=key + ' '
+                            foritem2 += key
+                            // print(foritem)
+                        }) 
+                        $('#table1').html(table1)
+                        if (foritem2==null){$('#foritem').html(fornull+'<br>'+dt)}
+                        else{$('#foritem').html('未帶物品:'+foritem+'<br>'+dt)}
+                        // $('#table1').html(table1)
+                       
+                     
+                    },
+                    error:function(){
+                        alert("error")
+                    }
+                })
+            }
+            $(analysisbutton).click(function(){
+                window.location='http://127.0.0.1:8000/item/button';
+                setInterval(function(){getdetail();},500)
+                var sourceOfPicture = "{% static 'images/1.jpg' %}";
+                var img = document.getElementById('bigpic')
+                img.src = sourceOfPicture.replace('90x90', '225x225');
+                img.style.display = "block";
+            })
+            
+    </script>
+
+</body>
+</html>
